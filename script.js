@@ -1,9 +1,8 @@
-// Sample Products Data
-const products = [
-  { id: 1, name: "Minimalist Black Hoodie", price: 65, image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2" },
-  { id: 2, name: "Classic White Tee", price: 30, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518" },
-  { id: 3, name: "Oversized Denim Jacket", price: 110, image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0" },
-  { id: 4, name: "Slim-Fit Chino Pants", price: 75, image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80" }
+let products = [
+  { id: 1, name: "Classic White T-Shirt", price: 25.00, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: 2, name: "Black Denim Jacket", price: 89.00, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: 3, name: "Beige Chino Pants", price: 45.00, image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: 4, name: "Minimalist Sneakers", price: 120.00, image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
 ];
 
 let cart = [];
