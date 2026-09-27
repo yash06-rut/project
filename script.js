@@ -106,3 +106,150 @@ cartOverlay.addEventListener("click", () => toggleCart(false));
 
 // Initialize Page
 renderProducts();
+
+// =======================
+// AUTHENTICATION LOGIC
+// =======================
+
+const authBtn = document.getElementById("auth-btn");
+const userDisplay = document.getElementById("user-display");
+const authModal = document.getElementById("auth-modal");
+const authOverlay = document.getElementById("auth-overlay");
+const closeAuth = document.getElementById("close-auth");
+const tabLogin = document.getElementById("tab-login");
+const tabRegister = document.getElementById("tab-register");
+const loginForm = document.getElementById("login-form");
+const registerForm = document.getElementById("register-form");
+const loggedInState = document.getElementById("logged-in-state");
+const welcomeMsg = document.getElementById("welcome-msg");
+const logoutBtn = document.getElementById("logout-btn");
+const loginMsg = document.getElementById("login-msg");
+const registerMsg = document.getElementById("register-msg");
+
+const API_URL = "http://localhost:5000/api/auth";
+
+// Check Login Status on Load
+function checkAuth() {
+  const token = localStorage.getItem("aura_token");
+  const username = localStorage.getItem("aura_user");
+  
+  if (token && username) {
+    userDisplay.innerText = username;
+    loginForm.classList.remove("active");
+    registerForm.classList.remove("active");
+    loggedInState.classList.add("active");
+    welcomeMsg.innerText = `Welcome back, ${username}!`;
+    tabLogin.style.display = "none";
+    tabRegister.style.display = "none";
+  } else {
+    userDisplay.innerText = "Login";
+    loggedInState.classList.remove("active");
+    loginForm.classList.add("active");
+    tabLogin.style.display = "block";
+    tabRegister.style.display = "block";
+    switchTab("login");
+  }
+}
+
+// Toggle Auth Modal
+function toggleAuthModal(open) {
+  if (open) {
+    authModal.classList.add("active");
+    authOverlay.classList.add("active");
+    checkAuth();
+  } else {
+    authModal.classList.remove("active");
+    authOverlay.classList.remove("active");
+    loginMsg.innerText = "";
+    registerMsg.innerText = "";
+  }
+}
+
+// Switch Tabs
+function switchTab(tab) {
+  if (tab === "login") {
+    tabLogin.classList.add("active");
+    tabRegister.classList.remove("active");
+    loginForm.classList.add("active");
+    registerForm.classList.remove("active");
+  } else {
+    tabRegister.classList.add("active");
+    tabLogin.classList.remove("active");
+    registerForm.classList.add("active");
+    loginForm.classList.remove("active");
+  }
+}
+
+// Handle Login
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const username = document.getElementById("login-username").value;
+  const password = document.getElementById("login-password").value;
+  
+  try {
+    const res = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    
+    if (res.ok) {
+      localStorage.setItem("aura_token", data.token);
+      localStorage.setItem("aura_user", data.user.username);
+      toggleAuthModal(false);
+      checkAuth();
+      loginForm.reset();
+    } else {
+      loginMsg.innerText = data.msg || "Login failed";
+    }
+  } catch (err) {
+    loginMsg.innerText = "Server error. Is backend running?";
+  }
+});
+
+// Handle Register
+registerForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const username = document.getElementById("register-username").value;
+  const password = document.getElementById("register-password").value;
+  
+  try {
+    const res = await fetch(`${API_URL}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    
+    if (res.ok) {
+      registerMsg.style.color = "green";
+      registerMsg.innerText = "Success! Please login.";
+      registerForm.reset();
+      setTimeout(() => switchTab("login"), 1500);
+    } else {
+      registerMsg.style.color = "#e63946";
+      registerMsg.innerText = data.msg || "Registration failed";
+    }
+  } catch (err) {
+    registerMsg.style.color = "#e63946";
+    registerMsg.innerText = "Server error. Is backend running?";
+  }
+});
+
+// Handle Logout
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("aura_token");
+  localStorage.removeItem("aura_user");
+  checkAuth();
+});
+
+// Event Listeners for UI
+authBtn.addEventListener("click", () => toggleAuthModal(true));
+closeAuth.addEventListener("click", () => toggleAuthModal(false));
+authOverlay.addEventListener("click", () => toggleAuthModal(false));
+tabLogin.addEventListener("click", () => switchTab("login"));
+tabRegister.addEventListener("click", () => switchTab("register"));
+
+// Run checkAuth on page load
+checkAuth();
