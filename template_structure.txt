@@ -1,0 +1,115 @@
+=== PARAGRAPHS ===
+P0: INTERNSHIP / UDP / TRAINING REPORT – REPORTING 2
+(Project Design and Implementation Progress Report)
+P1: 1. Student Information
+P2: 
+P3: 2. Internship / UDP / Training Details
+P4: 
+P5: 3. Work Progress Summary
+P6: Project Title:
+P7: ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+P8: 
+P9: b) Brief Overview of Work Completed After Reporting 1
+P10: (Mention development / research work completed)
+P11: c) System Architecture / Workflow Diagram
+P12: (Attach architecture, block diagram, flowchart, UML diagram, etc.)
+P13: d) Modules Completed / Features Implemented
+P14: 
+P15: e) Tools and Technologies Used
+P16: Programming Language:
+P17: Framework:
+P18: Database:
+P19: Hardware/Software Tools:
+P20: Other Technologies:
+P21: 
+P22: 4. Implementation Description
+P23: explain:
+P24: Algorithm / Method followed
+P25: Coding / Development details
+P26: Database design
+P27: API integration
+P28: Testing performed
+P29: 5.  Results / Output Screenshots
+P30: Attach:
+P31: Output screenshots
+P32: Experimental results
+P33: Application interface
+P34: Simulation results
+P35: Screenshot 1:
+P36: Description:
+P37: Screenshot 2:
+P38: Description:
+P39: 6. Challenges Faced and Solutions
+P40: 
+P41: 
+P42: 7. Tasks in Progress / Next Month Plan
+P43: Remaining modules
+P44: Testing plan
+P45: Documentation work
+P46: Deployment plan
+P47: 8. Learning / Skills Acquired
+P48: 
+P49: Technical Skills Learned:
+P50: Professional Skills Learned:
+P51: 
+P52: 9. References
+P53: References / Resources Used
+P54: Students must mention minimum 5 references.
+P55: Format:
+P56: Research Paper Reference:
+P57: [1] Author Name, "Paper Title", Journal/Conference Name, Year.
+P58: Website Reference:
+P59: [2] Website Name, Page Title, URL, Access Date.
+P60: Book Reference:
+P61: [3] Author Name, Book Title, Publisher, Year.
+P62: Example:
+P63: [1] A. Kumar and R. Sharma, "Machine Learning Based Disease Detection System", IEEE Conference, 2024.
+P64: [2] Python Documentation, https://docs.python.org, Accessed July 2026.
+P65: 
+P66: Evaluation (To be filled by Mentor (Institute))
+P67: 
+P68: Evaluation
+P69: 
+P70: Mentor (Institute) Remarks
+P71: ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+P72: 
+
+=== TABLES ===
+
+--- Table 0 (6 rows, 2 cols) ---
+Row 0: ['Student Name', '']
+Row 1: ['Enrollment Number', '']
+Row 2: ['Program/Branch', '']
+Row 3: ['Semester', '']
+Row 4: ['Contact Number', '']
+Row 5: ['Email ID', '']
+
+--- Table 1 (7 rows, 2 cols) ---
+Row 0: ['Type', '']
+Row 1: ['Company/Organization', '']
+Row 2: ['Department/Domain', '']
+Row 3: ['Mentor Name (Company)', '']
+Row 4: ['Mentor Name (Institute)', '']
+Row 5: ['Start Date', '']
+Row 6: ['End Date', '']
+
+--- Table 2 (2 rows, 3 cols) ---
+Row 0: ['Module Name', 'Description', 'Current Status']
+Row 1: ['', '', 'Completed/In Progress']
+
+--- Table 3 (2 rows, 2 cols) ---
+Row 0: ['Challenge Faced', 'Solution Applied']
+Row 1: ['', '']
+
+--- Table 4 (7 rows, 7 cols) ---
+Row 0: ['Criteria', 'Bloom’s Level', 'Excellent (20)', 'Good (15)', 'Average (10)', 'Poor (5)', 'Marks Obtained (Out of 20)']
+Row 1: ['Work Completion', 'L3–Apply', '≥50% work completed with proof', '30–50%', '<30%', 'No progress', '']
+Row 2: ['Methodology Implementation', 'L3–Apply / L4–Analyze', 'Method clearly applied and justified', 'Partial implementation', 'Unclear', 'None', '']
+Row 3: ['Tools & Technologies', 'L3–Apply', 'Tools used effectively with justification', 'Tools used', 'Limited use', 'No tools', '']
+Row 4: ['Documentation', 'L2–Understand / L3–Apply', 'Proper logs, evidence', 'Partial proof', 'Minimal', 'None', '']
+Row 5: ['Understanding of Work', 'L2–Understand / L4–Analyze', 'Strong conceptual clarity', 'Moderate', 'Basic', 'No understanding', '']
+Row 6: ['Total Marks', 'Total Marks', 'Total Marks', 'Total Marks', 'Total Marks', 'Total Marks', '']
+
+--- Table 5 (2 rows, 3 cols) ---
+Row 0: ['Student Signature', 'Mentor (Company) Signature', 'Mentor (Institute) Signature']
+Row 1: ['', '', '']
