@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +8,10 @@
   <link rel="stylesheet" href="style.css" />
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Google Identity Services SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
+
 <body>
 
   <!-- Navigation -->
@@ -67,36 +70,332 @@
     </div>
   </aside>
 
-  <!-- Auth Modal -->
+  <!-- Auth Modal (Login / Register / OTP) -->
   <div class="auth-overlay" id="auth-overlay"></div>
   <div class="auth-modal" id="auth-modal">
     <button class="close-auth" id="close-auth">&times;</button>
     <div class="auth-tabs">
       <button class="auth-tab active" id="tab-login">Login</button>
       <button class="auth-tab" id="tab-register">Register</button>
+      <button class="auth-tab" id="tab-otp"><i class="fa-solid fa-mobile-screen"></i> Phone OTP</button>
     </div>
-    
-    <!-- Login Form -->
+
+    <!-- Direct Google Connect Option -->
+    <div class="social-auth-box">
+      <button class="btn-google-connect" onclick="triggerGoogleAuth()">
+        <svg width="18" height="18" viewBox="0 0 18 18">
+          <path fill="#4285F4"
+            d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.617z" />
+          <path fill="#34A853"
+            d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" />
+          <path fill="#FBBC05"
+            d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" />
+          <path fill="#EA4335"
+            d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" />
+        </svg>
+        Continue with Google
+      </button>
+      <div class="or-divider"><span>OR USE EMAIL / PHONE</span></div>
+    </div>
+
+    <!-- 1. Email Login Form -->
     <form id="login-form" class="auth-form active">
-      <input type="text" id="login-username" placeholder="Username" required>
+      <input type="email" id="login-username" placeholder="Email Address" required>
       <input type="password" id="login-password" placeholder="Password" required>
       <button type="submit" class="btn btn-full">Login</button>
       <p class="auth-msg" id="login-msg"></p>
     </form>
 
-    <!-- Register Form -->
+    <!-- 2. Register Form -->
     <form id="register-form" class="auth-form">
-      <input type="text" id="register-username" placeholder="Username" required>
+      <input type="text" id="register-name" placeholder="Full Name" required>
+      <input type="email" id="register-username" placeholder="Email Address" required>
+      <input type="tel" id="register-phone" placeholder="Phone Number (e.g. 9998303399)" required>
       <input type="password" id="register-password" placeholder="Password" required>
-      <button type="submit" class="btn btn-full">Register</button>
+      <button type="submit" class="btn btn-full">Register Account</button>
       <p class="auth-msg" id="register-msg"></p>
     </form>
-    
-    <!-- Logged in State -->
-    <div id="logged-in-state" class="auth-form">
-      <h3 id="welcome-msg">Welcome!</h3>
-      <button id="logout-btn" class="btn btn-full">Logout</button>
+
+    <!-- 3. Phone OTP Form -->
+    <div id="otp-form" class="auth-form">
+      <div id="otp-step-1">
+        <p class="auth-subtext">Enter your mobile number to receive a 6-digit OTP code.</p>
+        <div class="phone-input-row">
+          <span class="country-code">+91</span>
+          <input type="tel" id="otp-phone" placeholder="10-Digit Phone Number" maxlength="10">
+        </div>
+        <button type="button" class="btn btn-full" id="btn-send-otp" onclick="requestOTP()">Send OTP Code</button>
+      </div>
+
+      <div id="otp-step-2" style="display: none;">
+        <div class="otp-banner" id="demo-otp-banner">
+          <i class="fa-solid fa-shield-halved"></i> OTP Code: <strong id="demo-otp-code">------</strong>
+        </div>
+        <p class="auth-subtext">Enter the 6-digit OTP sent to <strong id="otp-target-phone">+91 ----------</strong></p>
+        <input type="text" id="otp-code-input" placeholder="Enter 6-Digit OTP" maxlength="6"
+          style="text-align: center; letter-spacing: 4px; font-weight: bold; font-size: 1.1rem;">
+        <button type="button" class="btn btn-full" id="btn-verify-otp" onclick="submitVerifyOTP()">Verify &
+          Login</button>
+        <button type="button" class="btn-text" onclick="resetOTPForm()" style="margin-top: 0.5rem; width: 100%;">Change
+          Phone Number</button>
+      </div>
+      <p class="auth-msg" id="otp-msg"></p>
     </div>
+  </div>
+
+  <!-- Customer My Account Modal -->
+  <div class="account-overlay" id="account-overlay"></div>
+  <div class="account-modal" id="account-modal">
+    <button class="close-account" id="close-account">&times;</button>
+    <div class="account-header">
+      <div class="account-avatar">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div>
+        <h3 id="acc-user-name">Customer Name</h3>
+        <p id="acc-user-email">customer@example.com</p>
+      </div>
+      <button id="logout-btn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </div>
+
+    <!-- Account Navigation Tabs -->
+    <div class="account-nav-tabs">
+      <button class="acc-tab active" data-acctab="orders"><i class="fa-solid fa-box"></i> My Orders</button>
+      <button class="acc-tab" data-acctab="profile"><i class="fa-solid fa-id-card"></i> Profile</button>
+      <button class="acc-tab" data-acctab="addresses"><i class="fa-solid fa-location-dot"></i> Addresses</button>
+    </div>
+
+    <div class="account-body">
+      <!-- 1. Orders Tab -->
+      <div class="acc-content active" id="acc-tab-orders">
+        <h4>Order History</h4>
+        <div id="orders-list-container">
+          <p class="empty-state-msg">Loading orders...</p>
+        </div>
+      </div>
+
+      <!-- 2. Profile Tab -->
+      <div class="acc-content" id="acc-tab-profile">
+        <h4>Customer Profile</h4>
+        <form id="profile-form" class="profile-form">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="prof-name" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="prof-email" required>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="prof-phone">
+          </div>
+          <button type="submit" class="btn btn-full">Save Changes</button>
+          <p class="auth-msg" id="prof-msg"></p>
+        </form>
+      </div>
+
+      <!-- 3. Addresses Tab -->
+      <div class="acc-content" id="acc-tab-addresses">
+        <div class="addr-header-row">
+          <h4>Delivery Addresses</h4>
+          <button class="btn-sm" onclick="showAddAddressForm()"><i class="fa-solid fa-plus"></i> Add Address</button>
+        </div>
+
+        <div id="address-list-container">
+          <p class="empty-state-msg">Loading saved addresses...</p>
+        </div>
+
+        <!-- Add / Edit Address Form Modal -->
+        <form id="address-form" class="address-form" style="display:none;">
+          <h5 id="addr-form-title">Add New Address</h5>
+          <input type="hidden" id="addr-id">
+          <div class="form-row">
+            <input type="text" id="addr-name" placeholder="Full Name" required>
+            <input type="tel" id="addr-phone" placeholder="Phone Number" required>
+          </div>
+          <input type="text" id="addr-line1" placeholder="Address Line 1 (Street, House No.)" required>
+          <input type="text" id="addr-line2" placeholder="Address Line 2 (Landmark, Suite)">
+          <div class="form-row">
+            <input type="text" id="addr-city" placeholder="City" required>
+            <input type="text" id="addr-state" placeholder="State" required>
+            <input type="text" id="addr-pincode" placeholder="Pincode" required>
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="addr-default"> Set as Default Delivery Address
+          </label>
+          <div class="form-row">
+            <button type="submit" class="btn btn-full">Save Address</button>
+            <button type="button" class="btn-cancel" onclick="hideAddressForm()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Details Modal -->
+  <div class="order-detail-overlay" id="order-detail-overlay"></div>
+  <div class="order-detail-modal" id="order-detail-modal">
+    <button class="close-order-detail" id="close-order-detail">&times;</button>
+    <div class="order-detail-header">
+      <h3>Order Details</h3>
+      <span class="order-badge" id="od-status-badge">Confirmed</span>
+    </div>
+
+    <div class="order-detail-body" id="order-detail-content">
+      <p>Loading order details...</p>
+    </div>
+  </div>
+
+  <!-- Premium Payment Gateway Modal -->
+  <div class="payment-overlay" id="payment-overlay"></div>
+  <div class="payment-modal" id="payment-modal">
+    <button class="close-payment" id="close-payment">&times;</button>
+    <div class="payment-header">
+      <div class="pay-brand">
+        <i class="fa-solid fa-shield-halved"></i> AURA <span>Pay</span>
+      </div>
+      <div class="pay-amount-badge">
+        <span>Total:</span>
+        <strong id="pay-modal-total">₹0.00</strong>
+      </div>
+    </div>
+
+    <div class="payment-body">
+      <!-- Method Tabs -->
+      <div class="pay-methods-tabs">
+        <button class="pay-tab active" data-tab="upi">
+          <i class="fa-solid fa-mobile-screen"></i> UPI / QR
+        </button>
+        <button class="pay-tab" data-tab="card">
+          <i class="fa-solid fa-credit-card"></i> Card
+        </button>
+        <button class="pay-tab" data-tab="netbanking">
+          <i class="fa-solid fa-building-columns"></i> NetBanking
+        </button>
+        <button class="pay-tab" data-tab="cod">
+          <i class="fa-solid fa-hand-holding-dollar"></i> COD
+        </button>
+      </div>
+
+      <!-- Tab Contents -->
+      <!-- 1. UPI Tab -->
+      <div class="pay-content active" id="pay-tab-upi">
+        <div class="upi-options">
+          <p class="pay-label">Quick Pay with UPI Apps:</p>
+          <div class="upi-apps-grid">
+            <button class="upi-app-btn" onclick="selectUpiApp('Google Pay')">
+              <i class="fa-brands fa-google-pay" style="color:#4285F4; font-size:1.4rem;"></i> GPay
+            </button>
+            <button class="upi-app-btn" onclick="selectUpiApp('PhonePe')">
+              <i class="fa-solid fa-wallet" style="color:#5f259f; font-size:1.2rem;"></i> PhonePe
+            </button>
+            <button class="upi-app-btn" onclick="selectUpiApp('Paytm')">
+              <i class="fa-solid fa-bolt" style="color:#00baf2; font-size:1.2rem;"></i> Paytm
+            </button>
+          </div>
+          <div class="or-divider"><span>OR ENTER VPA / UPI ID</span></div>
+          <div class="input-group">
+            <i class="fa-solid fa-at"></i>
+            <input type="text" id="upi-id-input" placeholder="e.g. mobile@upi or username@okicici">
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Card Tab -->
+      <div class="pay-content" id="pay-tab-card">
+        <div class="card-form">
+          <div class="input-group">
+            <i class="fa-solid fa-credit-card"></i>
+            <input type="text" id="card-number" placeholder="Card Number (16 Digits)" maxlength="19">
+          </div>
+          <div class="input-row">
+            <div class="input-group">
+              <i class="fa-regular fa-calendar-check"></i>
+              <input type="text" id="card-expiry" placeholder="MM / YY" maxlength="5">
+            </div>
+            <div class="input-group">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="card-cvv" placeholder="CVV" maxlength="3">
+            </div>
+          </div>
+          <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="card-name" placeholder="Name on Card">
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Netbanking Tab -->
+      <div class="pay-content" id="pay-tab-netbanking">
+        <p class="pay-label">Select Your Bank:</p>
+        <select id="netbanking-bank" class="pay-select">
+          <option value="SBI">State Bank of India (SBI)</option>
+          <option value="HDFC">HDFC Bank</option>
+          <option value="ICICI">ICICI Bank</option>
+          <option value="AXIS">Axis Bank</option>
+          <option value="KOTAK">Kotak Mahindra Bank</option>
+        </select>
+      </div>
+
+      <!-- 4. COD Tab -->
+      <div class="pay-content" id="pay-tab-cod">
+        <div class="cod-box">
+          <i class="fa-solid fa-truck-fast cod-icon"></i>
+          <h4>Cash on Delivery</h4>
+          <p>Pay in cash or via UPI QR when your order is delivered to your doorstep.</p>
+        </div>
+      </div>
+
+      <!-- Pay Action Button -->
+      <button class="pay-submit-btn" id="pay-now-btn" onclick="submitCustomPayment()">
+        <i class="fa-solid fa-lock"></i> Pay <span id="pay-btn-amount">₹0.00</span>
+      </button>
+
+      <!-- Trust Footer -->
+      <div class="pay-trust-footer">
+        <span><i class="fa-solid fa-shield"></i> 256-Bit SSL Encrypted</span>
+        <span><i class="fa-solid fa-check-double"></i> PCI-DSS Compliant</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Success Receipt Modal -->
+  <div class="receipt-overlay" id="receipt-overlay"></div>
+  <div class="receipt-modal" id="receipt-modal">
+    <div class="receipt-success-icon">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <h2>Payment Successful!</h2>
+    <p class="receipt-subtitle">Thank you for your order with AURA Apparel</p>
+
+    <div class="receipt-card">
+      <div class="receipt-row">
+        <span>Order ID:</span>
+        <strong id="rec-order-id">#ORD-10293</strong>
+      </div>
+      <div class="receipt-row">
+        <span>Payment ID:</span>
+        <strong id="rec-pay-id">pay_10293847</strong>
+      </div>
+      <div class="receipt-row">
+        <span>Payment Method:</span>
+        <strong id="rec-method">UPI Instant</strong>
+      </div>
+      <div class="receipt-row">
+        <span>Date & Time:</span>
+        <strong id="rec-date">Today</strong>
+      </div>
+      <hr>
+      <div class="receipt-row total">
+        <span>Total Paid:</span>
+        <strong id="rec-amount">₹0.00</strong>
+      </div>
+    </div>
+
+    <button class="btn btn-full" onclick="closeReceiptModal()" style="margin-top:1.5rem; background:#27ae60;">
+      Continue Shopping
+    </button>
   </div>
 
   <!-- Footer -->
@@ -104,6 +403,9 @@
     <p>&copy; 2026 AURA Apparel. All rights reserved.</p>
   </footer>
 
+  <!-- Razorpay Checkout SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="script.js"></script>
 </body>
+
 </html>
